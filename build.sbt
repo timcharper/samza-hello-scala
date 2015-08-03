@@ -1,4 +1,4 @@
-scalaVersion := "2.11.7"
+scalaVersion := "2.10.4"
 
 name := "scamza"
 
@@ -7,7 +7,7 @@ Hello Samza, implemented in Scala
 """
 
 val SAMZA_SHELL_VERSION = "0.9.1"
-val SAMZA_VERSION = "0.10.0-SNAPSHOT"
+val SAMZA_VERSION = "0.9.1"
 val KAFKA_VERSION = "0.8.2.1"
 val HADOOP_VERSION = "2.4.1"
 val SLF4J_VERSION = "1.7.7"

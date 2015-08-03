@@ -6,8 +6,10 @@ import org.apache.samza.Partition
 import org.apache.samza.metrics.MetricsRegistry
 import org.apache.samza.system.{IncomingMessageEnvelope, SystemStreamPartition}
 import org.apache.samza.util.BlockingEnvelopeMap
+import org.slf4j.LoggerFactory
 
 class WikipediaConsumer(feed: ActorRef, systemName: String, registry: MetricsRegistry)(implicit actorRefFactory: ActorRefFactory) extends BlockingEnvelopeMap {
+  val log = LoggerFactory.getLogger(getClass)
   case object Start
   case object Stop
   case class Register(channel: String)
@@ -34,8 +36,10 @@ class WikipediaConsumer(feed: ActorRef, systemName: String, registry: MetricsReg
       case event: WikipediaFeedEvent =>
         val systemStreamPartition = new SystemStreamPartition(systemName, event.channel, new Partition(0));
 
-        try put(systemStreamPartition, new IncomingMessageEnvelope(systemStreamPartition, null, null, event))
-        catch { case e: Exception =>
+        try {
+          log.info(s"le event ${event}")
+          put(systemStreamPartition, new IncomingMessageEnvelope(systemStreamPartition, null, null, event))
+        } catch { case e: Exception =>
           System.err.println(e);
         }
       case Register(channel) =>
@@ -52,6 +56,7 @@ class WikipediaConsumer(feed: ActorRef, systemName: String, registry: MetricsReg
     actor ! Stop
 
   override def register(systemStreamPartition: SystemStreamPartition, startingOffset: String):Unit = {
+    log.info(s"le register ${systemStreamPartition.getStream()}")
     super.register(systemStreamPartition, startingOffset);
     actor ! Register(systemStreamPartition.getStream())
   }
